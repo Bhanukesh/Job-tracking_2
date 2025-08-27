@@ -8,7 +8,7 @@ import { ArrowLeft, Edit, ExternalLink, MapPin, DollarSign, Calendar, Building }
 import Link from "next/link"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { EditJobModal } from "@/components/edit-job-modal"
-import { useGetJobApplicationsQuery } from "@/store/api/enhanced/jobApplications"
+import { useGetJobsQuery } from "@/store/api/enhanced/jobs"
 import { useMemo, useEffect, useState } from "react"
 import { CompanyLogo } from "@/components/company-logo"
 
@@ -23,7 +23,7 @@ export default function JobDetailPage() {
     const backUrl = fromParam === 'dashboard' ? '/' : '/applications'
 
     // Fetch applications and find the specific job
-    const { data: applications = [], isLoading, error } = useGetJobApplicationsQuery()
+    const { data: applications = [], isLoading, error } = useGetJobsQuery()
     
     // Find the specific job application by ID
     const jobDetails = useMemo(() => {
@@ -112,7 +112,7 @@ export default function JobDetailPage() {
                     <Card>
                         <CardHeader>
                             <div className="min-w-0">
-                        <h1 className="text-xl sm:text-2xl font-bold text-foreground break-words">{jobDetails.jobTitle}</h1>
+                        <h1 className="text-xl sm:text-2xl font-bold text-foreground break-words">{jobDetails.title}</h1>
                         <div className="flex items-center space-x-2 mt-1">
                             <CompanyLogo company={jobDetails.company} size={24} />
                             <p className="text-base sm:text-lg text-muted-foreground">{jobDetails.company}</p>
@@ -192,8 +192,8 @@ export default function JobDetailPage() {
                             <Button 
                                 variant="outline" 
                                 className="w-full justify-start text-sm"
-                                onClick={() => jobDetails.jobUrl && window.open(jobDetails.jobUrl, '_blank')}
-                                disabled={!jobDetails.jobUrl}
+                                onClick={() => jobDetails.url && window.open(jobDetails.url, '_blank')}
+                                disabled={!jobDetails.url}
                             >
                                 <ExternalLink className="h-4 w-4 mr-2 flex-shrink-0" />
                                 <span className="truncate">View Original Job Posting</span>

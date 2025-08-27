@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation"
 import { EditJobModal } from "@/components/edit-job-modal"
 import { AddJobModal } from "@/components/add-job-modal"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { useGetJobApplicationsQuery, useDeleteJobApplicationMutation } from "@/store/api/enhanced/jobApplications"
+import { useGetJobsQuery, useDeleteJobMutation } from "@/store/api/enhanced/jobs"
 import { CompanyLogo } from "@/components/company-logo"
 
 export default function ApplicationsPage() {
@@ -24,8 +24,8 @@ export default function ApplicationsPage() {
     const [statusFilter, setStatusFilter] = useState("all")
     const [dateFilter, setDateFilter] = useState("")
     
-    const { data: applications = [], isLoading, error } = useGetJobApplicationsQuery()
-    const [deleteJobApplication, { isLoading: isDeleting }] = useDeleteJobApplicationMutation()
+    const { data: applications = [], isLoading, error } = useGetJobsQuery()
+    const [deleteJob, { isLoading: isDeleting }] = useDeleteJobMutation()
 
     // Reset to page 1 when applications data changes (new items added)
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function ApplicationsPage() {
 
     const handleDelete = async (id: number) => {
         try {
-            await deleteJobApplication({ id }).unwrap()
+            await deleteJob(id).unwrap()
         } catch (error) {
             console.error('Failed to delete application:', error)
         }
@@ -47,7 +47,7 @@ export default function ApplicationsPage() {
             .filter(app => {
                 // Search filter - check job title, company, and location
                 const matchesSearch = searchTerm === "" || 
-                    app.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     (app.location && app.location.toLowerCase().includes(searchTerm.toLowerCase()))
                 
@@ -252,7 +252,7 @@ export default function ApplicationsPage() {
                                                 <div className="flex items-center flex-1 min-w-0 space-x-3">
                                                     <CompanyLogo company={app.company} />
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className="font-medium text-foreground truncate">{app.jobTitle}</h3>
+                                                        <h3 className="font-medium text-foreground truncate">{app.title}</h3>
                                                         <p className="text-sm text-muted-foreground truncate">{app.company}</p>
                                                     </div>
                                                 </div>
@@ -283,7 +283,7 @@ export default function ApplicationsPage() {
                                                             </Button>
                                                         }
                                                         title="Delete Application"
-                                                        description={`Are you sure you want to delete the application for ${app.jobTitle} at ${app.company}? This action cannot be undone.`}
+                                                        description={`Are you sure you want to delete the application for ${app.title} at ${app.company}? This action cannot be undone.`}
                                                         confirmText="Delete"
                                                         onConfirm={() => handleDelete(app.id)}
                                                         variant="destructive"
@@ -357,7 +357,7 @@ export default function ApplicationsPage() {
                                         <TableRow key={app.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                                             <TableCell className="px-4 py-4">
                                                 <Link href={`/applications/${app.id}`} className="font-medium hover:underline text-sm">
-                                                    {app.jobTitle}
+                                                    {app.title}
                                                 </Link>
                                             </TableCell>
                                             <TableCell className="px-4 py-4">
@@ -396,7 +396,7 @@ export default function ApplicationsPage() {
                                                             </Button>
                                                         }
                                                         title="Delete Application"
-                                                        description={`Are you sure you want to delete the application for ${app.jobTitle} at ${app.company}? This action cannot be undone.`}
+                                                        description={`Are you sure you want to delete the application for ${app.title} at ${app.company}? This action cannot be undone.`}
                                                         confirmText="Delete"
                                                         onConfirm={() => handleDelete(app.id || 0)}
                                                         variant="destructive"
