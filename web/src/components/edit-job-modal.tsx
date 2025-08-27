@@ -18,19 +18,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Edit, Loader2, Check } from "lucide-react"
-import { useUpdateJobApplicationMutation, type JobApplication } from "@/store/api/enhanced/jobApplications"
+import { useUpdateJobMutation, type JobItem } from "@/store/api/enhanced/jobs"
 import { jobApplicationSchema, transformToUpdateCommand, type JobApplicationFormData } from "@/lib/validations/jobApplication"
 import { formatDateForInput } from "@/lib/utils/date"
 import { toast } from "sonner"
 
 interface EditJobModalProps {
-  job?: JobApplication;
+  job?: JobItem;
   trigger?: React.ReactNode;
 }
 
 export function EditJobModal({ job, trigger }: EditJobModalProps) {
   const [open, setOpen] = useState(false)
-  const [updateJobApplication, { isLoading }] = useUpdateJobApplicationMutation()
+  const [updateJob, { isLoading }] = useUpdateJobMutation()
 
   const {
     register,
@@ -57,13 +57,13 @@ export function EditJobModal({ job, trigger }: EditJobModalProps) {
   useEffect(() => {
     if (job) {
       reset({
-        jobTitle: job.jobTitle || "",
+        jobTitle: job.title || "",
         company: job.company || "",
         location: job.location || "",
-        salary: job.salary || "",
+        salary: job.salary ? job.salary.toString() : "",
         status: job.status || "Applied",
         description: job.description || "",
-        jobUrl: job.jobUrl || "",
+        jobUrl: job.url || "",
         dateApplied: formatDateForInput(job.dateApplied) || "",
       })
     }
@@ -80,9 +80,9 @@ export function EditJobModal({ job, trigger }: EditJobModalProps) {
 
       const updateCommand = transformToUpdateCommand(data)
 
-      await updateJobApplication({
+      await updateJob({
         id: job.id,
-        updateJobApplicationRequest: updateCommand,
+        updateJobCommandDto: updateCommand,
       }).unwrap()
 
       // Show success toast

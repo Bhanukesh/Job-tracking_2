@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { FileText, Users, MessageSquare, XCircle, Handshake, Loader2, X, Edit, Trash2, Filter } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { AddJobModal } from "@/components/add-job-modal"
-import { useGetJobApplicationsQuery, useDeleteJobApplicationMutation } from "@/store/api/enhanced/jobApplications"
+import { useGetJobsQuery, useDeleteJobMutation } from "@/store/api/enhanced/jobs"
 import { toast } from "sonner"
 import { useMemo, useState } from "react"
 import { safeSortArray } from "@/lib/utils"
@@ -15,8 +15,8 @@ import { CompanyLogo } from "@/components/company-logo"
 
 export default function DashboardPage() {
     const router = useRouter()
-    const { data: applications = [], isLoading, error } = useGetJobApplicationsQuery()
-    const [deleteJobApplication, { isLoading: isDeleting }] = useDeleteJobApplicationMutation()
+    const { data: applications = [], isLoading, error } = useGetJobsQuery()
+    const [deleteJob, { isLoading: isDeleting }] = useDeleteJobMutation()
     const [statusFilter, setStatusFilter] = useState<string | null>(null)
     
     // Calculate stats from real data
@@ -91,7 +91,7 @@ export default function DashboardPage() {
     const handleDelete = async (id: number) => {
         if (confirm('Are you sure you want to delete this application?')) {
             try {
-                await deleteJobApplication({ id }).unwrap()
+                await deleteJob(id).unwrap()
                 toast.success('Job application deleted successfully!')
             } catch (error: any) {
                 console.error('Failed to delete application:', error)
@@ -234,7 +234,7 @@ export default function DashboardPage() {
                                                 <div className="flex items-center flex-1 min-w-0 space-x-3">
                                                     <CompanyLogo company={app.company} />
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className="font-medium text-foreground truncate">{app.jobTitle}</h3>
+                                                        <h3 className="font-medium text-foreground truncate">{app.title}</h3>
                                                         <p className="text-sm text-muted-foreground truncate">{app.company}</p>
                                                     </div>
                                                 </div>
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                                 ) : (
                                     recentApplications.map((app) => (
                                         <TableRow key={app.id} className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => router.push(`/applications/${app.id}?from=dashboard`)}>
-                                            <TableCell className="px-6 py-4 font-medium">{app.jobTitle}</TableCell>
+                                            <TableCell className="px-6 py-4 font-medium">{app.title}</TableCell>
                                             <TableCell className="px-6 py-4">
                                                 <div className="flex items-center space-x-2">
                                                     <CompanyLogo company={app.company} />

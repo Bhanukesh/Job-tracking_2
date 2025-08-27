@@ -93,24 +93,24 @@ export type JobApplicationFormData = z.infer<typeof jobApplicationSchema>;
 
 // Transform the form data to match the API expected format
 export const transformToCreateCommand = (data: JobApplicationFormData) => ({
-  jobTitle: data.jobTitle,
+  title: data.jobTitle,
   company: data.company,
   dateApplied: new Date(data.dateApplied).toISOString(),
   status: data.status,
   description: data.description || null,
-  jobUrl: data.jobUrl || null,
-  salary: data.salary || null,
+  url: data.jobUrl || null,
+  salary: data.salary ? parseFloat(data.salary.replace(/[\$,kK\s\-–—]/g, '')) : null,
   location: data.location || null,
 });
 
 // Transform the form data for update operations
 export const transformToUpdateCommand = (data: JobApplicationFormData) => ({
-  jobTitle: data.jobTitle,
+  title: data.jobTitle,
   company: data.company,
   dateApplied: new Date(data.dateApplied).toISOString(),
   status: data.status,
   description: data.description || null,
-  jobUrl: data.jobUrl || null,
-  salary: data.salary || null,
+  url: data.jobUrl || null,
+  salary: data.salary ? parseFloat(data.salary.replace(/[\$,kK\s\-–—]/g, '')) : null,
   location: data.location || null,
 });

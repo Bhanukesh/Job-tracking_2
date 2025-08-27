@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, Loader2, Check } from "lucide-react"
 import { jobApplicationSchema, transformToCreateCommand, type JobApplicationFormData } from "@/lib/validations/jobApplication"
-import { useCreateJobApplicationMutation } from "@/store/api/enhanced/jobApplications"
+import { useCreateJobMutation } from "@/store/api/enhanced/jobs"
 import { getCurrentDateString } from "@/lib/utils/date"
 import { toast } from "sonner"
 import { CompanyLogo } from "@/components/company-logo"
@@ -30,7 +30,7 @@ interface AddJobModalProps {
 
 export function AddJobModal({ trigger }: AddJobModalProps) {
   const [open, setOpen] = useState(false)
-  const [createJobApplication, { isLoading }] = useCreateJobApplicationMutation()
+  const [createJob, { isLoading }] = useCreateJobMutation()
 
   const {
     register,
@@ -60,7 +60,7 @@ export function AddJobModal({ trigger }: AddJobModalProps) {
       const createCommand = transformToCreateCommand(data)
       console.log('Sending data:', createCommand) // Debug log
       
-      await createJobApplication({ createJobApplicationRequest: createCommand }).unwrap()
+      await createJob({ createJobCommand: createCommand }).unwrap()
       
       // Show success toast with check icon
       toast.success("Job application added successfully!", {
