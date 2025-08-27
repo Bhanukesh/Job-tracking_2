@@ -13,7 +13,7 @@ builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing.AddSource(Worker.ActivitySourceName));
 
 // Add database context
-builder.AddSqlServerDbContext<TodoDbContext>("tododb", null,
+builder.AddSqlServerDbContext<JobDbContext>("jobdb", null,
     optionsBuilder => optionsBuilder.UseSqlServer(options => 
     options.MigrationsAssembly(typeof(Program).Assembly.GetName().Name)));
 

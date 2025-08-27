@@ -20,12 +20,12 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddEndpointsApiExplorer();
 
 // Add database context
-builder.AddSqlServerDbContext<TodoDbContext>("tododb");
+builder.AddSqlServerDbContext<JobDbContext>("jobdb");
 
 builder.Services.AddOpenApiDocument(options =>
 {
     options.DocumentName = "v1";
-    options.Title = "Todos API";
+    options.Title = "Jobs API";
     options.Version = "v1";
     options.UseHttpAttributeNameAsOperationId = true;
     
